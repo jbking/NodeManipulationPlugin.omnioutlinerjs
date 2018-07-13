@@ -1,1 +1,23 @@
-{"author":"The Plugin Author","libraries":[{"identifier":"ApplicationLib"}],"identifier":"com.PlugInAuthorID.OmniOutliner","version":"1.0","description":"A collection of Omni Automation scripts for OmniOutliner.","actions":[{"image":"icon.png","identifier":"aboutThisPlugin"},{"image":"icon.png","identifier":"checkSelectedItems"}],"defaultLocale":"en"}
+{
+  "author": "Yusuke MURAOKA",
+  "libraries": [
+    {
+      "identifier": "ApplicationLib"
+    }
+  ],
+  "identifier": "org.jbking.NodeManipulationPlugin",
+  "version": "1.0",
+  "description": "A collection of node manipulations for OmniOutliner.",
+  "actions": [
+    {
+      "image": "icon.png",
+      "identifier": "aboutThisPlugin"
+    },
+    {
+      "image": "icon.png",
+      "identifier": "splitNode"
+    }
+  ],
+  "defaultLocale": "en"
+}
+

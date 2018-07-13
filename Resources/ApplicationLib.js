@@ -47,7 +47,7 @@ var _ = function() {
 		// create a version object
 		var aVersion = new Version("1.0")
 		// look up the plugin
-		var plugin = PlugIn.find("com.PlugInAuthorID.OmniOutliner",aVersion)
+		var plugin = PlugIn.find("org.jbking.NodeManipulationPlugin",aVersion)
 		// get the url for the text file inside this plugin
 		var url = plugin.resourceNamed("ApplicationLib.strings")
 		// read the file

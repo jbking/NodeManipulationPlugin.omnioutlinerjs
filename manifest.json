@@ -16,6 +16,10 @@
     {
       "image": "icon.png",
       "identifier": "splitNode"
+    },
+    {
+      "image": "icon.png",
+      "identifier": "mergeNodes"
     }
   ],
   "defaultLocale": "en"

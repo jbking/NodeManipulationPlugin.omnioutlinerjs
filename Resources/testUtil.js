@@ -3,10 +3,12 @@ function Item(parent) {
 
   if (typeof parent == "undefined") {
     this.ancestors = [];
+    this.level = 1;
   } else {
     const ancestors = Object.create(parent.ancestors);
     ancestors.unshift(parent);
     this.ancestors = ancestors;
+    this.level = parent.level + 1;
   }
 
   this.remove = () => {
@@ -28,9 +30,16 @@ function Item(parent) {
   };
 
   this.topic = "";
-
-  this.index = 0;
 }
+
+Object.defineProperty(Item.prototype, "index", {
+  get: function() {
+    return this.parent.children.findIndex(v => v == this);
+  },
+  set: function(v) {
+    throw new Error("Read only property: index");
+  }
+});
 
 function Node(item) {
   this.object = item;
@@ -42,7 +51,11 @@ function setSelectedItems(selectedItems) {
   global.document.editors.push(editor);
 }
 
+function createRootItem() {
+  return new Item();
+}
+
 module.exports = {
-  Item: Item,
+  createRootItem: createRootItem,
   setSelectedItems: setSelectedItems
 };

@@ -1,49 +1,61 @@
-var _ = (function() {
-  var action = new PlugIn.Action(function(selection) {
+var _ = (() => {
+  function _selectedItems(selection) {
     // if called externally (from script) then generate selection array
     if (typeof selection == "undefined") {
       // convert nodes into items
-      selectedItems = document.editors[0].selectedNodes.map(function(node) {
-        return node.object;
-      });
+      return document.editors[0].selectedNodes.map(node => node.object);
     } else {
-      selectedItems = selection.items;
+      return selection.items;
     }
+  }
+
+  var action = new PlugIn.Action(selection => {
+    var selectedItems = _selectedItems(selection);
+
     // this array is shuffled often. so, sort it.
-    selectedItems.sort(function(a, b) {
-      return a.index - b.index;
-    });
+    const recur = item => {
+      if (!item) return 0;
+      if (! item.parent) return 0;
+      return recur(item.parent) * 10 + item.index + 1;
+    };
+    /* should be sorted as
+     * [ { topic: 'topic1', level: 2, index: 0, score: 1 },
+     *   { topic: 'topic1_1', level: 3, index: 0, score: 11 },
+     *   { topic: 'topic1_1_1', level: 4, index: 0, score: 111 },
+     *   { topic: 'topic1_1_2', level: 4, index: 1, score: 112 },
+     *   { topic: 'topic1_2', level: 3, index: 1, score: 12 } ]
+     */
+    selectedItems.sort((a, b) => ("" + recur(a) < "" + recur(b) ? -1 : 1));
+    // console.log(selectedItems.map(item => {return {topic: item.topic, level: item.level, index: item.index, score: recur(item)}}));
     firstItem = selectedItems[0];
-    var topic = selectedItems
-      .map(function(item) {
-        return item.topic;
-      })
-      .join("\n");
-    firstItem.parent.addChild(firstItem.before, function(item) {
-      item.topic = topic;
-    });
-    selectedItems.forEach(function(item) {
-      item.remove();
-    });
+    var topic = selectedItems.map(item => item.topic).join("\n");
+    firstItem.topic = topic;
+    selectedItems.slice(1).forEach(item => { try {
+      item.remove()
+    } catch (e) {
+      // Simply ignore error during removing.
+      // This happens when removing an item which is removed already by removing the item's parent.
+    }});
   });
 
-  action.validate = function(selection) {
-    var selectedItems;
-    if (typeof selection == "undefined") {
-      selectedItems = document.editors[0].selectedNodes.map(function(node) {
-        return node.object;
-      });
-    } else {
-      selectedItems = selection.items;
+  action.validate = selection => {
+    var selectedItems = _selectedItems(selection);
+    if (selectedItems.length < 2) {
+      return false;
     }
-    var firstItemParent = selectedItems[0].parent;
-    // to avoid accident, valid only if selected some nodes and they are children of same parent.
-    return (
-      selectedItems.length > 1 &&
-      selectedItems.every(function(item) {
-        return item.parent == firstItemParent;
-      })
-    );
+
+    const minLevel = selectedItems.map(item => item.level)[0];
+    const minLevelItems = selectedItems.filter(item => item.level == minLevel);
+    const minLevelItemParent = minLevelItems[0].parent;
+    if (!minLevelItems.every(item => item.parent == minLevelItemParent)) {
+      return false;
+    }
+    const checkRecur = item =>
+      item.children.every(
+        child => selectedItems.find(v => v == child) && checkRecur(child)
+      );
+    // to avoid accident, valid only if selected all nodes are in their tree.
+    return minLevelItems.every(item => checkRecur(item));
   };
 
   return action;

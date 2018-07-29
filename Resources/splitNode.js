@@ -1,36 +1,35 @@
 var _ = (function() {
-  var action = new PlugIn.Action(function(selection) {
+  function _selectedItems(selection) {
     // if called externally (from script) then generate selection array
     if (typeof selection == "undefined") {
       // convert nodes into items
-      selectedItems = document.editors[0].selectedNodes.map(function(node) {
-        return node.object;
-      });
+      return document.editors[0].selectedNodes.map(node => node.object);
     } else {
-      selectedItems = selection.items;
+      return selection.items;
     }
-    selectedItems.forEach(function(item) {
-      item.topic.split("\n").forEach(function(text) {
-        item.parent.addChild(null, function(item) {
+  }
+
+  var action = new PlugIn.Action(selection => {
+    var selectedItems = _selectedItems(selection);
+
+    selectedItems.forEach(item => {
+      const lines = item.topic.split("\n");
+      item.topic = lines[0];
+      lines.slice(1).forEach(text => {
+        item.parent.addChild(null, item => {
           item.topic = text;
         });
       });
-      item.remove();
     });
   });
 
-  action.validate = function(selection) {
-    var selectedItems;
-    if (typeof selection == "undefined") {
-      selectedItems = document.editors[0].selectedNodes.map(function(node) {
-        return node.object;
-      });
-    } else {
-      selectedItems = selection.items;
+  action.validate = selection => {
+    var selectedItems = _selectedItems(selection);
+    if (selectedItems.length == 0) {
+      return false;
     }
-    return selectedItems.every(function(item) {
-      return item.topic.split("\n").length > 2;
-    });
+
+    return selectedItems.every(item => item.topic.split("\n").length >= 2);
   };
 
   return action;

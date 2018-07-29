@@ -28,9 +28,8 @@ var _ = (() => {
       return false;
     }
 
-    var firstItemParent = selectedItems[0].parent;
     // to avoid accident, valid only if selected some nodes and they are children of same parent.
-    return selectedItems.every(item => item.parent == firstItemParent);
+    return selectedItems.every(item => selectedItems.find(v => v == item.parent));
   };
 
   return action;

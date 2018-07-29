@@ -102,6 +102,9 @@ describe("action", () => {
     item1_2.topic = "topic1_2";
     item1_2.index = 2;
 
+    // XXX
+    console.log(item1_1_1);
+
     setSelectedItems([item1_2, item1_1_2, item1_1_1, item1_1, item1 /* shuffled */]);
     action.f();
     expect(Object.keys(global.rootItem.children).length).toEqual(1);

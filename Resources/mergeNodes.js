@@ -28,8 +28,15 @@ var _ = (() => {
       return false;
     }
 
-    // to avoid accident, valid only if selected some nodes and they are children of same parent.
-    return selectedItems.every(item => selectedItems.find(v => v == item.parent));
+    const minLevel = selectedItems.map(item => item.level)[0];
+    const minLevelItems = selectedItems.filter(item => item.level == minLevel);
+    const minLevelItemParent = minLevelItems[0].parent
+    if (!minLevelItems.every(item => item.parent == minLevelItemParent)) {
+      return false;
+    }
+    const checkRecur = item => item.children.every(child => selectedItems.find(v => v == child) && checkRecur(child));
+    // to avoid accident, valid only if selected all nodes are in their tree.
+    return minLevelItems.every(item => checkRecur(item));
   };
 
   return action;

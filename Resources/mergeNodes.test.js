@@ -50,6 +50,17 @@ describe("validate function", () => {
     setSelectedItems([item1, item2]);
     expect(action.validate()).toBeTruthy();
   });
+
+  test("return true when two or more selected items are family", () => {
+    const item1 = new Item(global.rootItem);
+    const item1_1 = new Item(item1);
+    const item1_1_1 = new Item(item1_1);
+    const item1_1_2 = new Item(item1_1);
+    const item1_2 = new Item(item1);
+
+    setSelectedItems([item1, item1_1, item1_1_1, item1_1_2, item1_2]);
+    expect(action.validate()).toBeTruthy();
+  });
 });
 
 describe("action", () => {
@@ -71,5 +82,36 @@ describe("action", () => {
     expect(item1.removed).toBeFalsy();
     expect(item2.removed).toBeTruthy();
     expect(item3.removed).toBeTruthy();
+  });
+
+  test("merge three items which are family", () => {
+    const item1 = new Item(global.rootItem);
+    const item1_1 = new Item(item1);
+    const item1_1_1 = new Item(item1_1);
+    const item1_1_2 = new Item(item1_1);
+    const item1_2 = new Item(item1);
+
+    item1.topic = "topic1";
+    item1.before = "item1Before";
+    item1_1.topic = "topic1_1";
+    item1_1.index = 1;
+    item1_1_1.topic = "topic1_1_1";
+    item1_1_1.index = 1;
+    item1_1_2.topic = "topic1_1_2";
+    item1_1_2.index = 2;
+    item1_2.topic = "topic1_2";
+    item1_2.index = 2;
+
+    setSelectedItems([item1_2, item1_1_2, item1_1_1, item1_1, item1 /* shuffled */]);
+    action.f();
+    expect(Object.keys(global.rootItem.children).length).toEqual(1);
+    expect(global.rootItem.children["item1Before"].topic).toEqual(
+      "topic1\ntopic1_1\ntopic1_1_1\ntopic1_1_2\ntopic1_2"
+    );
+    expect(item1.removed).toBeTruthy();
+    expect(item1_1.removed).toBeTruthy();
+    expect(item1_1_1.removed).toBeTruthy();
+    expect(item1_1_2.removed).toBeTruthy();
+    expect(item1_2.removed).toBeTruthy();
   });
 });

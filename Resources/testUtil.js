@@ -3,10 +3,12 @@ function Item(parent) {
 
   if (typeof parent == "undefined") {
     this.ancestors = [];
+    this.level = 1;
   } else {
     const ancestors = Object.create(parent.ancestors);
     ancestors.unshift(parent);
     this.ancestors = ancestors;
+    this.level = parent.level + 1;
   }
 
   this.remove = () => {

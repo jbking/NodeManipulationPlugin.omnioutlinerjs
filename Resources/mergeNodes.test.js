@@ -15,31 +15,7 @@ beforeEach(() => {
 });
 
 require("./mergeNodes.js");
-
-function Item(parent) {
-  this.parent = parent;
-  this.remove = () => {
-    this.removed = true;
-  };
-  this.children = {};
-  this.addChild = (position, callback) => {
-    const item = new Item(this);
-    this.children[position] = item;
-    callback(item);
-  };
-  this.topic = "";
-  this.index = 0;
-}
-
-function Node(item) {
-  this.object = item;
-}
-
-function setSelectedItems(selectedItems) {
-  const editor = {};
-  editor.selectedNodes = selectedItems.map(item => new Node(item));
-  global.document.editors.push(editor);
-}
+const {Item, setSelectedItems } = require("./testUtil.js");
 
 test("action exists", () => {
   expect(action).toBeDefined();

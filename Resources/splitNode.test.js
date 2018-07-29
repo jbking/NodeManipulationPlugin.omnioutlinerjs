@@ -15,36 +15,7 @@ beforeEach(() => {
 });
 
 require("./splitNode.js");
-
-function Item(parent) {
-  this.parent = parent;
-  this.remove = () => {
-    this.removed = true;
-  };
-  this.children = {};
-  this.childrenCount = 0;
-  this.addChild = (position, callback) => {
-    const item = new Item(this);
-    this.childrenCount += 1;
-    if (position == null) {
-      position = "__new__" + this.childrenCount;
-    }
-    this.children[position] = item;
-    callback(item);
-  };
-  this.topic = "";
-  this.index = 0;
-}
-
-function Node(item) {
-  this.object = item;
-}
-
-function setSelectedItems(selectedItems) {
-  const editor = {};
-  editor.selectedNodes = selectedItems.map(item => new Node(item));
-  global.document.editors.push(editor);
-}
+const {Item, setSelectedItems } = require("./testUtil.js");
 
 test("action exists", () => {
   expect(action).toBeDefined();
@@ -85,12 +56,12 @@ describe("action", () => {
     setSelectedItems([item1_1, item2_1]);
     action.f();
     expect(Object.keys(item1.children).length).toEqual(2);
-    expect(item1.children["__new__1"].topic).toEqual("item1_line1");
-    expect(item1.children["__new__2"].topic).toEqual("item1_line2");
+    expect(item1.children[0].topic).toEqual("item1_line1");
+    expect(item1.children[1].topic).toEqual("item1_line2");
     expect(item1_1.removed).toBeTruthy();
     expect(Object.keys(item2.children).length).toEqual(2);
-    expect(item2.children["__new__1"].topic).toEqual("item2_line1");
-    expect(item2.children["__new__2"].topic).toEqual("item2_line2");
+    expect(item2.children[0].topic).toEqual("item2_line1");
+    expect(item2.children[1].topic).toEqual("item2_line2");
     expect(item2_1.removed).toBeTruthy();
   });
 });

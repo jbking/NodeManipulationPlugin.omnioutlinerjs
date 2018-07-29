@@ -1,14 +1,19 @@
 var _ = (function() {
-  var action = new PlugIn.Action(function(selection) {
+  function _selectedItems(selection) {
     // if called externally (from script) then generate selection array
     if (typeof selection == "undefined") {
       // convert nodes into items
-      selectedItems = document.editors[0].selectedNodes.map(function(node) {
+      return document.editors[0].selectedNodes.map(function(node) {
         return node.object;
       });
     } else {
-      selectedItems = selection.items;
+      return selection.items;
     }
+  }
+
+  var action = new PlugIn.Action(function(selection) {
+    var selectedItems = _selectedItems(selection);
+
     // this array is shuffled often. so, sort it.
     selectedItems.sort(function(a, b) {
       return a.index - b.index;
@@ -28,18 +33,14 @@ var _ = (function() {
   });
 
   action.validate = function(selection) {
-    var selectedItems;
-    if (typeof selection == "undefined") {
-      selectedItems = document.editors[0].selectedNodes.map(function(node) {
-        return node.object;
-      });
-    } else {
-      selectedItems = selection.items;
+    var selectedItems = _selectedItems(selection);
+    if (selectedItems.length < 2) {
+      return false;
     }
+
     var firstItemParent = selectedItems[0].parent;
     // to avoid accident, valid only if selected some nodes and they are children of same parent.
     return (
-      selectedItems.length > 1 &&
       selectedItems.every(function(item) {
         return item.parent == firstItemParent;
       })

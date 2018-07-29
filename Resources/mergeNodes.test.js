@@ -70,11 +70,8 @@ describe("action", () => {
     const item3 = global.rootItem.addChild();
 
     item1.topic = "topic1";
-    item1.index = 0;
     item2.topic = "topic2";
-    item2.index = 1;
     item3.topic = "topic3";
-    item3.index = 2;
 
     setSelectedItems([item3, item1, item2 /* shuffled */]);
     action.f();
@@ -92,26 +89,24 @@ describe("action", () => {
     const item1_2 = item1.addChild();
 
     item1.topic = "topic1";
-    item1.before = "item1Before";
     item1_1.topic = "topic1_1";
-    item1_1.index = 1;
     item1_1_1.topic = "topic1_1_1";
-    item1_1_1.index = 1;
     item1_1_2.topic = "topic1_1_2";
-    item1_1_2.index = 2;
     item1_2.topic = "topic1_2";
-    item1_2.index = 2;
 
-    // XXX
-    console.log(item1_1_1);
-
-    setSelectedItems([item1_2, item1_1_2, item1_1_1, item1_1, item1 /* shuffled */]);
+    setSelectedItems([
+      item1_2,
+      item1_1_2,
+      item1_1_1,
+      item1_1,
+      item1 /* shuffled */
+    ]);
     action.f();
     expect(Object.keys(global.rootItem.children).length).toEqual(1);
-    expect(global.rootItem.children["item1Before"].topic).toEqual(
+    expect(item1.topic).toEqual(
       "topic1\ntopic1_1\ntopic1_1_1\ntopic1_1_2\ntopic1_2"
     );
-    expect(item1.removed).toBeTruthy();
+    expect(item1.removed).toBeFalsy();
     expect(item1_1.removed).toBeTruthy();
     expect(item1_1_1.removed).toBeTruthy();
     expect(item1_1_2.removed).toBeTruthy();

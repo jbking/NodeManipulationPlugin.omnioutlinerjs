@@ -3,9 +3,7 @@ var _ = (function() {
     // if called externally (from script) then generate selection array
     if (typeof selection == "undefined") {
       // convert nodes into items
-      return document.editors[0].selectedNodes.map(function(node) {
-        return node.object;
-      });
+      return document.editors[0].selectedNodes.map(node => node.object);
     } else {
       return selection.items;
     }

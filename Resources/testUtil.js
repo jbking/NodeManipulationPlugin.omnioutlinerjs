@@ -30,9 +30,16 @@ function Item(parent) {
   };
 
   this.topic = "";
-
-  this.index = 0;
 }
+
+Object.defineProperty(Item.prototype, "index", {
+  get: function() {
+    return this.parent.children.findIndex(v => v == this);
+  },
+  set: function(v) {
+    throw new Error("Read only property: index");
+  }
+});
 
 function Node(item) {
   this.object = item;

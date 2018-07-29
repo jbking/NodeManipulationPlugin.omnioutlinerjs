@@ -11,11 +11,11 @@ beforeEach(() => {
   global.document = {};
   global.document.editors = [];
 
-  global.rootItem = new Item();
+  global.rootItem = createRootItem();
 });
 
 require("./mergeNodes.js");
-const { Item, setSelectedItems } = require("./testUtil.js");
+const { createRootItem, setSelectedItems } = require("./testUtil.js");
 
 test("action exists", () => {
   expect(action).toBeDefined();
@@ -29,34 +29,34 @@ describe("validate function", () => {
   });
 
   test("return false when only one selected items", () => {
-    setSelectedItems([new Item(global.rootItem)]);
+    setSelectedItems([global.rootItem.addChild()]);
     expect(action.validate()).toBeFalsy();
   });
 
   test("return false when two or more selected items but not related", () => {
-    const item1 = new Item(global.rootItem);
-    const item1_1 = new Item(item1);
-    const item2 = new Item(global.rootItem);
-    const item2_1 = new Item(item2);
+    const item1 = global.rootItem.addChild();
+    const item1_1 = item1.addChild();
+    const item2 = global.rootItem.addChild();
+    const item2_1 = item2.addChild();
 
     setSelectedItems([item1_1, item2_1]);
     expect(action.validate()).toBeFalsy();
   });
 
   test("return true when two or more selected items have same parent", () => {
-    const item1 = new Item(global.rootItem);
-    const item2 = new Item(global.rootItem);
+    const item1 = global.rootItem.addChild();
+    const item2 = global.rootItem.addChild();
 
     setSelectedItems([item1, item2]);
     expect(action.validate()).toBeTruthy();
   });
 
   test("return true when two or more selected items are family", () => {
-    const item1 = new Item(global.rootItem);
-    const item1_1 = new Item(item1);
-    const item1_1_1 = new Item(item1_1);
-    const item1_1_2 = new Item(item1_1);
-    const item1_2 = new Item(item1);
+    const item1 = global.rootItem.addChild();
+    const item1_1 = item1.addChild();
+    const item1_1_1 = item1_1.addChild();
+    const item1_1_2 = item1_1.addChild();
+    const item1_2 = item1.addChild();
 
     setSelectedItems([item1, item1_1, item1_1_1, item1_1_2, item1_2]);
     expect(action.validate()).toBeTruthy();
@@ -65,9 +65,9 @@ describe("validate function", () => {
 
 describe("action", () => {
   test("merge three items which have same parent, in order", () => {
-    const item1 = new Item(global.rootItem);
-    const item2 = new Item(global.rootItem);
-    const item3 = new Item(global.rootItem);
+    const item1 = global.rootItem.addChild();
+    const item2 = global.rootItem.addChild();
+    const item3 = global.rootItem.addChild();
 
     item1.topic = "topic1";
     item1.index = 0;
@@ -85,11 +85,11 @@ describe("action", () => {
   });
 
   test("merge three items which are family", () => {
-    const item1 = new Item(global.rootItem);
-    const item1_1 = new Item(item1);
-    const item1_1_1 = new Item(item1_1);
-    const item1_1_2 = new Item(item1_1);
-    const item1_2 = new Item(item1);
+    const item1 = global.rootItem.addChild();
+    const item1_1 = item1.addChild();
+    const item1_1_1 = item1_1.addChild();
+    const item1_1_2 = item1_1.addChild();
+    const item1_2 = item1.addChild();
 
     item1.topic = "topic1";
     item1.before = "item1Before";

@@ -42,7 +42,11 @@ function setSelectedItems(selectedItems) {
   global.document.editors.push(editor);
 }
 
+function createRootItem() {
+  return new Item();
+}
+
 module.exports = {
-  Item: Item,
+  createRootItem: createRootItem,
   setSelectedItems: setSelectedItems
 };

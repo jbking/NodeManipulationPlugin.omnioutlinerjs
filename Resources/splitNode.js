@@ -11,28 +11,27 @@ var _ = (function() {
     }
   }
 
-  var action = new PlugIn.Action(function(selection) {
+  var action = new PlugIn.Action(selection => {
     var selectedItems = _selectedItems(selection);
 
-    selectedItems.forEach(function(item) {
-      item.topic.split("\n").forEach(function(text) {
-        item.parent.addChild(null, function(item) {
+    selectedItems.forEach(item => {
+      const lines = item.topic.split("\n");
+      item.topic = lines[0];
+      lines.slice(1).forEach(text => {
+        item.parent.addChild(null, item => {
           item.topic = text;
         });
       });
-      item.remove();
     });
   });
 
-  action.validate = function(selection) {
+  action.validate = selection => {
     var selectedItems = _selectedItems(selection);
     if (selectedItems.length == 0) {
       return false;
     }
 
-    return selectedItems.every(function(item) {
-      return item.topic.split("\n").length >= 2;
-    });
+    return selectedItems.every(item => item.topic.split("\n").length >= 2);
   };
 
   return action;

@@ -15,7 +15,7 @@ beforeEach(() => {
 });
 
 require("./mergeNodes.js");
-const {Item, setSelectedItems } = require("./testUtil.js");
+const { Item, setSelectedItems } = require("./testUtil.js");
 
 test("action exists", () => {
   expect(action).toBeDefined();
@@ -59,20 +59,16 @@ describe("action", () => {
     const item3 = new Item(global.rootItem);
 
     item1.topic = "topic1";
-    item1.index = 1;
-    item1.before = "item1Before";
+    item1.index = 0;
     item2.topic = "topic2";
-    item2.index = 2;
+    item2.index = 1;
     item3.topic = "topic3";
-    item3.index = 3;
+    item3.index = 2;
 
     setSelectedItems([item3, item1, item2 /* shuffled */]);
     action.f();
-    expect(Object.keys(global.rootItem.children).length).toEqual(1);
-    expect(global.rootItem.children["item1Before"].topic).toEqual(
-      "topic1\ntopic2\ntopic3"
-    );
-    expect(item1.removed).toBeTruthy();
+    expect(item1.topic).toEqual("topic1\ntopic2\ntopic3");
+    expect(item1.removed).toBeFalsy();
     expect(item2.removed).toBeTruthy();
     expect(item3.removed).toBeTruthy();
   });

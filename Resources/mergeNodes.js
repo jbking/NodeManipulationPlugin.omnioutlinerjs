@@ -1,4 +1,4 @@
-var _ = (function() {
+var _ = (() => {
   function _selectedItems(selection) {
     // if called externally (from script) then generate selection array
     if (typeof selection == "undefined") {
@@ -11,28 +11,18 @@ var _ = (function() {
     }
   }
 
-  var action = new PlugIn.Action(function(selection) {
+  var action = new PlugIn.Action(selection => {
     var selectedItems = _selectedItems(selection);
 
     // this array is shuffled often. so, sort it.
-    selectedItems.sort(function(a, b) {
-      return a.index - b.index;
-    });
+    selectedItems.sort((a, b) => a.index - b.index);
     firstItem = selectedItems[0];
-    var topic = selectedItems
-      .map(function(item) {
-        return item.topic;
-      })
-      .join("\n");
-    firstItem.parent.addChild(firstItem.before, function(item) {
-      item.topic = topic;
-    });
-    selectedItems.forEach(function(item) {
-      item.remove();
-    });
+    var topic = selectedItems.map(item => item.topic).join("\n");
+    firstItem.topic = topic;
+    selectedItems.slice(1).forEach(item => item.remove());
   });
 
-  action.validate = function(selection) {
+  action.validate = selection => {
     var selectedItems = _selectedItems(selection);
     if (selectedItems.length < 2) {
       return false;
@@ -40,11 +30,7 @@ var _ = (function() {
 
     var firstItemParent = selectedItems[0].parent;
     // to avoid accident, valid only if selected some nodes and they are children of same parent.
-    return (
-      selectedItems.every(function(item) {
-        return item.parent == firstItemParent;
-      })
-    );
+    return selectedItems.every(item => item.parent == firstItemParent);
   };
 
   return action;

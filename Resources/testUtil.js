@@ -14,15 +14,17 @@ function Item(parent) {
   };
 
   this.children = [];
-  this.childrenCount = 0;
   this.addChild = (position, callback) => {
     const item = new Item(this);
-    this.childrenCount += 1;
-    if (position == null) {
-      position = this.childrenCount - 1;
+    if (!position) {
+      position = this.children.length;
     }
     this.children[position] = item;
-    callback(item);
+
+    if (typeof callback != "undefined") {
+      callback(item);
+    }
+    return item;
   };
 
   this.topic = "";
@@ -43,4 +45,4 @@ function setSelectedItems(selectedItems) {
 module.exports = {
   Item: Item,
   setSelectedItems: setSelectedItems
-}
+};

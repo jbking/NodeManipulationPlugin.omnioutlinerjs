@@ -15,7 +15,7 @@ var _ = (() => {
     // this array is shuffled often. so, sort it.
     const recur = item => {
       if (!item) return 0;
-      if (! item.parent) return 0;
+      if (!item.parent) return 0;
       return recur(item.parent) * 10 + item.index + 1;
     };
     /* should be sorted as
@@ -30,12 +30,14 @@ var _ = (() => {
     firstItem = selectedItems[0];
     var topic = selectedItems.map(item => item.topic).join("\n");
     firstItem.topic = topic;
-    selectedItems.slice(1).forEach(item => { try {
-      item.remove()
-    } catch (e) {
-      // Simply ignore error during removing.
-      // This happens when removing an item which is removed already by removing the item's parent.
-    }});
+    selectedItems.slice(1).forEach(item => {
+      try {
+        item.remove();
+      } catch (e) {
+        // Simply ignore error during removing.
+        // This happens when removing an item which is removed already by removing the item's parent.
+      }
+    });
   });
 
   action.validate = selection => {

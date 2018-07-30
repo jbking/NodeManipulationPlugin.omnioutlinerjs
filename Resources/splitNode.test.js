@@ -65,4 +65,20 @@ describe("action", () => {
     expect(item2.children[1].topic).toEqual("item2_line2");
     expect(item2_1.removed).toBeFalsy();
   });
+
+  test("split item on situation with siblings", () => {
+    const item1 = global.rootItem.addChild();
+    const item1_1 = item1.addChild();
+    const item1_2 = item1.addChild();
+    item1_1.topic = "item1_line1\nitem1_line2";
+
+    setSelectedItems([item1_1]);
+    action.f();
+
+    expect(Object.keys(item1.children).length).toEqual(3);
+    expect(item1.children[0].topic).toEqual("item1_line1");
+    expect(item1.children[1].topic).toEqual("item1_line2");
+    expect(item1.children[2]).toEqual(item1_2);
+    expect(item1_1.removed).toBeFalsy();
+  });
 });

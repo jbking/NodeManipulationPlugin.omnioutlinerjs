@@ -15,8 +15,9 @@ var _ = (function() {
     selectedItems.forEach(item => {
       const lines = item.topic.split("\n");
       item.topic = lines[0];
+      var target = item;
       lines.slice(1).forEach(text => {
-        item.parent.addChild(null, item => {
+        target = item.parent.addChild(target.after, item => {
           item.topic = text;
         });
       });

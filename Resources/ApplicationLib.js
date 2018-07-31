@@ -45,7 +45,7 @@ var _ = (function() {
   // returns contents of matching strings file
   ApplicationLib.documentation = function() {
     // create a version object
-    var aVersion = new Version("1.0");
+    var aVersion = new Version("0.1.0");
     // look up the plugin
     var plugin = PlugIn.find("org.jbking.NodeManipulationPlugin", aVersion);
     // get the url for the text file inside this plugin

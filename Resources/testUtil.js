@@ -1,3 +1,8 @@
+function ItemPosition(item, position) {
+  this.item = item;
+  this.position = position;
+}
+
 function Item(parent) {
   this.parent = parent;
 
@@ -18,10 +23,20 @@ function Item(parent) {
   this.children = [];
   this.addChild = (position, callback) => {
     const item = new Item(this);
-    if (!position) {
+    if (position) {
+      var left, right;
+      if (position.position == "before") {
+        left = this.children.slice(0, position.item.index);
+        right = this.children.slice(position.item.index);
+      } else {
+        left = this.children.slice(0, position.item.index + 1);
+        right = this.children.slice(position.item.index + 1);
+      }
+      this.children = left.concat(Array.of(item)).concat(right);
+    } else {
       position = this.children.length;
+      this.children[position] = item;
     }
-    this.children[position] = item;
 
     if (typeof callback != "undefined") {
       callback(item);
@@ -30,6 +45,9 @@ function Item(parent) {
   };
 
   this.topic = "";
+
+  this.before = new ItemPosition(this, "before");
+  this.after = new ItemPosition(this, "after");
 }
 
 Object.defineProperty(Item.prototype, "index", {
